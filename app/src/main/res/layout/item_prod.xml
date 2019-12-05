@@ -1,0 +1,112 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:id="@+id/layout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/list_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                app:civ_border_color="@android:color/holo_blue_light"
+                app:civ_border_width="1dp" />
+
+            <TextView
+                android:id="@+id/product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/list_avatar"
+                android:gravity="center_vertical"
+                android:text="@string/pName"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/product"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/list_avatar"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:text="@string/pDesc"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/sNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/category"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/list_avatar"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/pId"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+
+    <!--    <TextView-->
+    <!--        android:id = "@+id/sNo"-->
+    <!--        android:layout_width = "0dp"-->
+    <!--        android:layout_height = "match_parent"-->
+    <!--        android:layout_weight = "1"-->
+    <!--        android:background = "@drawable/cell_shape"-->
+    <!--        android:ellipsize = "end"-->
+    <!--        android:padding = "5dp"-->
+    <!--        android:text = "@string/pId"-->
+    <!--        android:singleLine = "true" />-->
+
+    <!--    <TextView-->
+    <!--        android:id = "@+id/product"-->
+    <!--        android:layout_width = "0dp"-->
+    <!--        android:layout_height = "match_parent"-->
+    <!--        android:layout_weight = "1"-->
+    <!--        android:background = "@drawable/cell_shape"-->
+    <!--        android:ellipsize = "end"-->
+    <!--        android:padding = "5dp"-->
+    <!--        android:text = "@string/pName"-->
+    <!--        android:singleLine = "true" />-->
+
+    <!--    <TextView-->
+    <!--        android:id = "@+id/category"-->
+    <!--        android:layout_width = "0dp"-->
+    <!--        android:layout_height = "match_parent"-->
+    <!--        android:layout_weight = "2"-->
+    <!--        android:background = "@drawable/cell_shape"-->
+    <!--        android:ellipsize = "end"-->
+    <!--        android:padding = "5dp"-->
+    <!--        android:text = "@string/pDesc"-->
+    <!--        android:singleLine = "true" />-->
+
+    <!--    <TextView-->
+    <!--        android:id = "@+id/price"-->
+    <!--        android:layout_width = "0dp"-->
+    <!--        android:layout_height = "match_parent"-->
+    <!--        android:layout_weight = "1"-->
+    <!--        android:background = "@drawable/cell_shape"-->
+    <!--        android:ellipsize = "end"-->
+    <!--        android:padding = "5dp"-->
+    <!--        android:text = "@string/price"-->
+    <!--        android:singleLine = "true" />-->
+</LinearLayout>

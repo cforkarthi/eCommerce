@@ -1,0 +1,10 @@
+package com.valli.shoppingapp;
+
+public class Constants {
+    public static final String MYPREF = "MyPref";
+    public static final String USER_EMAIL = "user_email";
+    public static final String list_Size = "list_Size";
+    public static final String user_ID = "user_ID";
+    public static final String CURRENT_USER_KEY = "CURRENT_USER_KEY";
+
+}

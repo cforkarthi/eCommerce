@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="500dp"-->
+<!--        android:layout_gravity="center_vertical|center_horizontal|center"-->
+<!--        android:layout_margin="80dp"-->
+<!--        app:cardCornerRadius="5dp"-->
+<!--        app:cardElevation="5dp">-->
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/nodata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center_horizontal|center_vertical|center"
+            android:text="@string/no_data_found"
+            android:textSize="20sp"
+            android:visibility="gone" />
+<!--    </androidx.cardview.widget.CardView>-->
+
+</LinearLayout>
+
+
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:id="@+id/frame"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@drawable/bg"-->
+    <!--        app:cardElevation="2dp"-->
+    <!--        app:cardMaxElevation="3dp">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/relativeLayout1"-->
+    <!--            android:layout_width="fill_parent"-->
+    <!--            android:layout_height="match_parent">-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1"-->
+    <!--                android:gravity="center"-->
+    <!--                android:padding="5dp"-->
+    <!--                android:text="@string/pId"-->
+    <!--                android:background="@drawable/cell_shape"-->
+    <!--                android:textColor="@android:color/black" />-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1.0"-->
+    <!--                android:gravity="center"-->
+    <!--                android:padding="5dp"-->
+    <!--                android:text="@string/pName"-->
+    <!--                android:background="@drawable/cell_shape"-->
+    <!--                android:textColor="@android:color/black" />-->
+
+    <!--            <TextView-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="2"-->
+    <!--                android:gravity="center"-->
+    <!--                android:padding="5dp"-->
+    <!--                android:text="@string/pDesc"-->
+    <!--                android:background="@drawable/cell_shape"-->
+    <!--                android:textColor="@android:color/black" />-->
+
+    <!--        </LinearLayout>-->

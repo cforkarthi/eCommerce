@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "222185066358",
+    "firebase_url": "https://shopping-app-dc998.firebaseio.com",
+    "project_id": "shopping-app-dc998",
+    "storage_bucket": "shopping-app-dc998.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222185066358:android:1aa555ed26651d1333f457",
+        "android_client_info": {
+          "package_name": "com.valli.shoppingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222185066358-voue9mgfc354i1b1b1j8nfb364cv1ook.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB38uADWVBddqd7RS0PiZDCRYTe81J4rBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "222185066358-voue9mgfc354i1b1b1j8nfb364cv1ook.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
