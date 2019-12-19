@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.valli.shoppingapp.Constants;
 import com.valli.shoppingapp.Dashboard;
 import com.valli.shoppingapp.BaseFragment;
 import com.valli.shoppingapp.R;
@@ -34,7 +35,6 @@ public class ProfileFragment extends BaseFragment {
 
     private TextView name, dob, email, mobile, adrs;
     private View view;
-    private ImageView logout;
     private TextView title;
 
 
@@ -61,7 +61,7 @@ public class ProfileFragment extends BaseFragment {
         mobile = view.findViewById(R.id.disp_mob);
         adrs = view.findViewById(R.id.disp_address);
         Toolbar toolbar = getActivity().findViewById(R.id.tbToolbar);
-        logout = toolbar.findViewById(R.id.logout);
+        ImageView logout = toolbar.findViewById(R.id.logout);
         logout.setOnClickListener(v -> logout());
 //        profile_img = view.findViewById(R.id.prof_icon);
     }
@@ -71,8 +71,7 @@ public class ProfileFragment extends BaseFragment {
         title = toolbar.findViewById(R.id.title);
         title.setText(getActivity().getString(R.string.MENU_PROFILE_TITLE));
         showProgress(getActivity().getString(R.string.FETCH_DATA));
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference().child("users");
+        DatabaseReference databaseReference = firebaseDatabase.getReference().child(Constants.USERS);
         Log.e("Check profile email ", pref.getString(USER_EMAIL, ""));
         databaseReference.orderByChild(getActivity().getString(R.string.EMAIL)).equalTo(pref.getString(USER_EMAIL, ""))
                 .addValueEventListener(new ValueEventListener() {
@@ -96,9 +95,6 @@ public class ProfileFragment extends BaseFragment {
                         Log.e("Check ", databaseError.getMessage()); //Don't ignore errors!
                     }
                 });
-
-//        String letter = String.valueOf(name.getText().charAt(0));
-//        profile_img.setLetter(letter);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.valli.shoppingapp.Adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ public class CustomAdapter extends RecyclerView.Adapter<ProductViewHolder>/* imp
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(ctx).inflate(R.layout.row_items, parent, false);
+        View view = LayoutInflater.from(ctx).inflate(R.layout.row_item_home, parent, false);
         return new ProductViewHolder(view);
 
     }
@@ -54,8 +53,6 @@ public class CustomAdapter extends RecyclerView.Adapter<ProductViewHolder>/* imp
         Picasso.get().load(productList.get(position).getUrl()).priority(Picasso.Priority.HIGH).resize(300, 100).centerCrop().into(holder.imageView);
 
         //For selection
-
-
       /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

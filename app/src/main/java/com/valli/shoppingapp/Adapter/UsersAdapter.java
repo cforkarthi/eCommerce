@@ -21,7 +21,7 @@ public class UsersAdapter extends ArrayAdapter<Product> {
     public Context context;
 
     public UsersAdapter(Context context, ArrayList<Product> productList) {
-        super(context, R.layout.item_prod, productList);
+        super(context, R.layout.row_item_order, productList);
         this.context = context;
         this.productList = productList;
     }
@@ -56,7 +56,7 @@ public class UsersAdapter extends ArrayAdapter<Product> {
         if (convertView == null) {
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.item_prod, parent, false);
+            convertView = inflater.inflate(R.layout.row_item_order, parent, false);
             holder = new ViewHolder();
             holder.mSNo = convertView.findViewById(R.id.sNo);
             holder.mProduct = convertView.findViewById(R.id.product);

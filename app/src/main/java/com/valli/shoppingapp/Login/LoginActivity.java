@@ -20,8 +20,6 @@ public class LoginActivity extends CommonActivity {
     private Button btnLogin;
     private FirebaseAuth firebaseAuth;
     String email_from_db;
-    private FirebaseDatabase mCloudDb;
-    private long current_value;
 
 
     @Override
@@ -39,7 +37,6 @@ public class LoginActivity extends CommonActivity {
 //        else
         email_from_db = pref.getString(Constants.USER_EMAIL, "");
         Log.e("Check email ", email_from_db);
-        current_value = getIntent().getLongExtra(getString(R.string.LAST_REGISTERATION), 0);
     }
 
 
@@ -50,7 +47,6 @@ public class LoginActivity extends CommonActivity {
     }
 
     private void setUpViews() {
-        mCloudDb = FirebaseDatabase.getInstance();
         email = findViewById(R.id.email);
         pass = findViewById(R.id.password);
         btnLogin = findViewById(R.id.login);

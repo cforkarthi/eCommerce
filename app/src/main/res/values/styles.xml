@@ -16,7 +16,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@android:color/holo_blue_dark</item>
         <item name="buttonStyle">@style/button</item>
-
+        <item name="alertDialogTheme">@style/alert</item>
     </style>
 
     <style name="button">parent="android:style/Widget.Button">
@@ -31,6 +31,11 @@
         <item name="android:layout_margin">0dip</item>
         <item name="android:maxLines">1</item>
         <item name="android:background">@android:color/holo_blue_dark</item>
+    </style>
+
+    <style name="alert">
+        <item name ='android:negativeButtonText'>Cancel</item>
+        <item name ='android:positiveButtonText'>OK</item>
     </style>
 
 </resources>

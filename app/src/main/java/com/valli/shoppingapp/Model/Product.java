@@ -1,10 +1,22 @@
 package com.valli.shoppingapp.Model;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+
+@Entity(tableName = "product")
 public class Product implements Serializable {
+    @NonNull
+    @PrimaryKey(autoGenerate = false)
     private String prodId;
+    @ColumnInfo(name = "pname")
     private String product;
+    @ColumnInfo(name = "pdesc")
     private String descrption;
+    @ColumnInfo(name = "purl")
     private String url;
     private Boolean selected;
 

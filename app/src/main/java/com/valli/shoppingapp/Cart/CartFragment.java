@@ -25,13 +25,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.valli.shoppingapp.Adapter.CartCustomAdapter;
-import com.valli.shoppingapp.Dashboard;
 import com.valli.shoppingapp.BaseFragment;
+import com.valli.shoppingapp.Constants;
+import com.valli.shoppingapp.Dashboard;
 import com.valli.shoppingapp.Model.Product;
 import com.valli.shoppingapp.OrderDetail.OrderDetailFragment;
 import com.valli.shoppingapp.R;
@@ -55,24 +55,18 @@ public class CartFragment extends BaseFragment {
      * save it as a document using cloud fireStore
      */
     private RecyclerView recyclerView;
-    private Button btn_placeorder, btn_clear_cart;
+    private Button btn_placeorder;
     private View view;
 
-    private ImageView logout;
-    private TextView title, nodata, total;
+    private TextView title;
+    private TextView nodata;
     private CartCustomAdapter adapter;
     private LinearLayout layout_total;
     private List<Product> selectedList = new ArrayList<>(), list_from_db = new ArrayList<>(), values;
     private DatabaseReference databaseReference;
-    private FirebaseDatabase firebaseDatabase;
-    private String userID;
-    private FirebaseAuth mfirebaseAuth;
-    private FirebaseUser mfirebaseuser;
     private String mUserId;
     private FirebaseFirestore storeDb;
     private Context ctx;
-    private Product p;
-    private Map<String, Product> pMap = new HashMap<>();
     private Map<String, String> map = new HashMap<>();
 
 
@@ -97,25 +91,26 @@ public class CartFragment extends BaseFragment {
         selectedList.clear();
         list_from_db.clear();
         Log.e("Cart", "fetchFromDB");
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        mfirebaseAuth = FirebaseAuth.getInstance();
-        mfirebaseuser = mfirebaseAuth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseAuth mfirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mfirebaseuser = mfirebaseAuth.getCurrentUser();
+        databaseReference = firebaseDatabase.getReference();
         mUserId = mfirebaseuser.getUid();
         storeDb = FirebaseFirestore.getInstance();
         values = new ArrayList<>();
-        Map<String, Product> td = new HashMap<>();
-        databaseReference.child("users").child(mUserId).child("Product").addValueEventListener(new ValueEventListener() {
+        Map<String, Product> mapData = new HashMap<>();
+
+        // firebase realtime db
+        databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Log.e("Check base value", ds.getValue().toString());
                     Log.e("Check key", ds.getKey());
                     Product product1 = ds.getValue(Product.class);
-                    td.put(ds.getKey(), product1);
+                    mapData.put(ds.getKey(), product1);
                 }
-                values = new ArrayList<>(td.values());
-                List<String> keys = new ArrayList<>(td.keySet());
+                values = new ArrayList<>(mapData.values());
+                List<String> keys = new ArrayList<>(mapData.keySet());
 //                for (Product p : values)
 //                    Log.e("check firebase", p.getUrl());
                 list_from_db = values;
@@ -128,6 +123,8 @@ public class CartFragment extends BaseFragment {
             }
         });
 
+
+        // firestore
 //        selectedList.clear();
 //        list_from_db.clear();
 //        FirebaseFirestore.getInstance().collection("Cart_details").document(mUserId).get()
@@ -174,13 +171,11 @@ public class CartFragment extends BaseFragment {
         Toolbar toolbar = getActivity().findViewById(R.id.tbToolbar);
         title = toolbar.findViewById(R.id.title);
         title.setText(getActivity().getString(R.string.menu_cart_title));
-        logout = toolbar.findViewById(R.id.logout);
+        ImageView logout = toolbar.findViewById(R.id.logout);
         logout.setOnClickListener(v -> logout());
         recyclerView = view.findViewById(R.id.recycler_cart);
-        total = view.findViewById(R.id.tv_total);
         nodata = view.findViewById(R.id.tv_nodata);
         btn_placeorder = view.findViewById(R.id.btn_placeorder);
-        btn_clear_cart = view.findViewById(R.id.btn_clearCart);
         layout_total = view.findViewById(R.id.layout_total);
     }
 
@@ -193,31 +188,16 @@ public class CartFragment extends BaseFragment {
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        loadDataFromDb();
-//        String id = pref.getString(CURRENT_USER_KEY, "");
         if (selectedList.size() > 0) {
             btn_placeorder.setVisibility(VISIBLE);
-//            btn_clear_cart.setVisibility(VISIBLE);
         } else {
             btn_placeorder.setVisibility(GONE);
-//            btn_clear_cart.setVisibility(GONE);
         }
         btn_placeorder.setOnClickListener(v -> {
             placeOrder();
         });
-//        btn_clear_cart.setOnClickListener(v -> {
-//            clearCart();
-//        });
+
     }
-//
-//    private void clearCart() {
-//        showAlert("Do you want to remove All items from Cart");
-//        showProgress();
-//        selectedList.clear();
-//        adapter.notifyDataSetChanged();
-//        databaseReference.child("users").child(mUserId).child("Product").removeValue();
-//        loadValues();
-//    }
 
     private void loadDataFromDb(List<Product> list_from_db) {
 
@@ -230,7 +210,6 @@ public class CartFragment extends BaseFragment {
             nodata.setVisibility(GONE);
             layout_total.setVisibility(GONE);
             btn_placeorder.setVisibility(VISIBLE);
-//            btn_clear_cart.setVisibility(VISIBLE);
         } else {
             removeProgress();
             Log.e("check else size of lis", String.valueOf(this.list_from_db.size()));
@@ -238,9 +217,7 @@ public class CartFragment extends BaseFragment {
             recyclerView.setVisibility(GONE);
             nodata.setVisibility(VISIBLE);
             btn_placeorder.setVisibility(GONE);
-//            btn_clear_cart.setVisibility(GONE);
         }
-        // title.setText(getActivity().getString(R.string.menu_cart_title));
         loadValues();
     }
 
@@ -249,8 +226,6 @@ public class CartFragment extends BaseFragment {
         if (selectedList != null && selectedList.size() > 0) {
             Log.e("check loadValue ", String.valueOf(selectedList.size()));
             removeProgress();
-//            total.setText(String.valueOf(selectedList.size()));
-//            total.setText(String.valueOf(selectedList.size()));
             adapter.setProductList(selectedList);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -269,7 +244,6 @@ public class CartFragment extends BaseFragment {
                 .setPositiveButton(getActivity().getString(R.string.confirm), (dialog, which) -> {
 
                     // save data to db, move on
-
                     for (int i = 0; i < selectedList.size(); i++) {
                         map.put(mUserId + "_pId_" + i, selectedList.get(i).getProdId());
                         map.put(mUserId + "_pName_" + i, selectedList.get(i).getProduct());
@@ -277,18 +251,20 @@ public class CartFragment extends BaseFragment {
                         map.put(mUserId + "_pDesc_" + i, selectedList.get(i).getDescrption());
                         map.put(mUserId + "_pSel_" + i, selectedList.get(i).getSelected().toString());
 
-                        storeDb.collection("Order_Details").document(mUserId).set(map, SetOptions.merge());
-                        Log.e("check cart ", storeDb.collection("Order_Details").document(mUserId).get().toString());
+                        storeDb.collection(Constants.ORDERDETAIL).document(mUserId).set(map, SetOptions.merge());
+                        Log.e("check cart ", storeDb.collection(Constants.ORDERDETAIL).document(mUserId).get().toString());
                     }
 
-                    databaseReference.child("users").child(mUserId).child("Product").setValue(null);
-                    databaseReference.child("users").child(mUserId).child("Product").removeValue((databaseError, databaseReference) -> Log.e("check remove ",databaseReference.toString()));
+                    databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).setValue(null);
+                    databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).removeValue((databaseError, databaseReference) -> Log.e("check remove ", databaseReference.toString()));
                     selectedList.clear();
                     adapter.setProductList(selectedList);
                     adapter.notifyDataSetChanged();
+
 //                    FirebaseFirestore.getInstance().collection("Cart_details").document(mUserId).delete();
                     removeProgress();
                     Toast.makeText(ctx, getActivity().getString(R.string.order_confirmed), Toast.LENGTH_SHORT).show();
+
                     // ? navigate to order detail or enough to show toast
                     loadFragment(new OrderDetailFragment());
                 })
@@ -299,13 +275,6 @@ public class CartFragment extends BaseFragment {
                 })
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
-    }
-
-
-    @Override
-    public void onPause() {
-        Log.e("Cart", "onPause");
-        super.onPause();
     }
 
     @Override

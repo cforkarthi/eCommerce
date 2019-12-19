@@ -29,12 +29,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.valli.shoppingapp.APIClient.ProductApiClient;
 import com.valli.shoppingapp.APIInterface.ApiInterface;
 import com.valli.shoppingapp.Adapter.CustomAdapter;
+import com.valli.shoppingapp.Constants;
+import com.valli.shoppingapp.DAO.ProductDao;
 import com.valli.shoppingapp.Dashboard;
 import com.valli.shoppingapp.BaseFragment;
 import com.valli.shoppingapp.Cart.CartFragment;
+import com.valli.shoppingapp.Database.Database;
 import com.valli.shoppingapp.Model.Product;
 import com.valli.shoppingapp.R;
 
@@ -55,34 +59,30 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     /**
      * after successful login, load this page with response of given api
      * by default this should be selected
-     * search bar - implemented, selection of list items - implemented
-     * add to cart - on progress
+     * search bar, selection of list items,
+     * add to cart
      */
     private List<Product> productList;
     private RecyclerView recyclerView;
     private CustomAdapter adapter;
 
-    private Button add_cart;
-    private EditText et_search_list;
-    private TextView tv_nodata;
-    private SearchView search;
+    private EditText etSearchList;
+    private TextView tvNoData;
     private Call<List<Product>> call;
 
     private View view;
-    private ImageView logout;
     private TextView title;
-    private List<Product> selectedList, union, intersect, list_from_db = new ArrayList<>();
-    private FirebaseDatabase firebaseDatabase;
+    private List<Product> selectedList;
+    private List<Product> union;
+    private List<Product> list_from_db = new ArrayList<>();
     private DatabaseReference databaseReference;
     private String mUserId;
-    private Map<String, Product> td = new HashMap<>();
-    private Product p;
+    private Map<String, Product> mapData = new HashMap<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_layout, container, false);
-
         return view;
     }
 
@@ -99,21 +99,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         recyclerView.setAdapter(adapter);
         ApiInterface model = ProductApiClient.getClient().create(ApiInterface.class);
         call = model.getProductDetails();
-//        showProgress(getActivity().getString(R.string.load_data));
-        showProgress("Loading data");
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        showProgress(getActivity().getString(R.string.load_data));
+//        showProgress("Loading data");
         databaseReference = firebaseDatabase.getReference();
         FirebaseAuth mfirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mfirebaseuser = mfirebaseAuth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
         mUserId = mfirebaseuser.getUid();
-
-//        if (getActivity() != null && isAdded()) {
-        // Parse the JSON data
-        // Write to your SQL database
-        // Load the data into the list view
         loadValues();
-//        }
     }
 
     private void setUpViews() {
@@ -121,32 +113,29 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //        pref = getActivity().getSharedPreferences("MyPref", 0); // 0 - for private mode
 //        editor = pref.edit();
         recyclerView = view.findViewById(R.id.recyler_view);
-        add_cart = view.findViewById(R.id.add_cart);
-        add_cart.setOnClickListener(this);
+        Button addCart = view.findViewById(R.id.add_cart);
+        addCart.setOnClickListener(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         Toolbar toolbar = getActivity().findViewById(R.id.tbToolbar);
         title = toolbar.findViewById(R.id.title);
         title.setText(getActivity().getString(R.string.menu_home_title));
-        tv_nodata = view.findViewById(R.id.no_data);
+        tvNoData = view.findViewById(R.id.no_data);
 //        search = view.findViewById(R.id.searchView);
-        et_search_list = view.findViewById(R.id.et_search_list);
+        etSearchList = view.findViewById(R.id.et_search_list);
 //        search.setOnClickListener(this);
-        logout = toolbar.findViewById(R.id.logout);
+        ImageView logout = toolbar.findViewById(R.id.logout);
         logout.setOnClickListener(this);
 
-        et_search_list.addTextChangedListener(new TextWatcher() {
+        etSearchList.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence userInput, int start, int count, int after) {
-//                if (userInput.length() == 0)
-//                    adapter.setProductList(productList);
+
             }
 
             @Override
             public void onTextChanged(CharSequence userInput, int start, int before, int count) {
-//                if (userInput.length() == 0)
-//                    adapter.setProductList(productList);
 
             }
 
@@ -156,15 +145,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 if (userInput.length() == 0) {
                     adapter.setProductList(productList);
                     recyclerView.setVisibility(View.VISIBLE);
-                    tv_nodata.setVisibility(View.GONE);
-                }
-//                if (userInput.length() == 0) {
-////                    et_search_list.setCompoundDrawables(null, null, getResources().getDrawable(android.R.drawable.ic_menu_search), null);
-//                    adapter.setProductList(productList);
-//                }
-//                if (et_search_list.getText().toString().length() > 2) {
-////                    et_search_list.setCompoundDrawables(null, null, getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel), null);
-                else {
+                    tvNoData.setVisibility(View.GONE);
+                } else {
                     showProgress("Searching . .");
                     searchAdapter(userInput.toString());
                 }
@@ -210,7 +192,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         title.setText(getActivity().getString(R.string.menu_home_title));
-        et_search_list.getText().clear();
+        etSearchList.getText().clear();
         adapter.setProductList(productList);
         ((Dashboard) getActivity()).navView.setSelectedItemId(R.id.home);
 
@@ -234,21 +216,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         } else {
             adapter.setProductList(productList);
             recyclerView.setVisibility(View.VISIBLE);
-            tv_nodata.setVisibility(View.GONE);
+            tvNoData.setVisibility(View.GONE);
         }
         //        if (searchList.isEmpty()) {
 //            recyclerView.setVisibility(View.GONE);
-//            tv_nodata.setVisibility(View.VISIBLE);
+//            tvNoData.setVisibility(View.VISIBLE);
 //        } else
         if (searchList != null && searchList.size() > 0) {
             removeProgress();
             adapter.setProductList(searchList);
             recyclerView.setVisibility(View.VISIBLE);
-            tv_nodata.setVisibility(View.GONE);// data set changed
+            tvNoData.setVisibility(View.GONE);// data set changed
         } else {
             removeProgress();
             recyclerView.setVisibility(View.GONE);
-            tv_nodata.setVisibility(View.VISIBLE);
+            tvNoData.setVisibility(View.VISIBLE);
             // no record found message should show
         }
     }
@@ -256,16 +238,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     // Add Cart - Save the selected items in firebase db
     private void addToCart() {
-
-        FirebaseFirestore storeDb = FirebaseFirestore.getInstance();
         Log.e("Check list_from_db 0", String.valueOf(list_from_db.size()));
-        Map<String, String> map = new HashMap<>();
         selectedList = new ArrayList<>();
         selectedList = adapter.getSelectedList();
         Log.e("check >>> ", String.valueOf(selectedList.size()));
+
+
+        Database db = Database.getInstance(getContext());
+        for (int i = 0; i < selectedList.size(); i++) {
+            db.productDao().insertProduct(selectedList.get(i));
+        }
+
         if (selectedList != null && adapter.getSelectedList().size() > 0) {
             Log.e("Check sel_list 1", String.valueOf(selectedList.size()));
-            databaseReference.child("users").child(mUserId).child("Product").addValueEventListener(new ValueEventListener() {
+            databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -273,9 +259,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                             Log.e("Check base value", ds.getValue().toString());
                             Log.e("Check key", ds.getKey());
                             Product product1 = ds.getValue(Product.class);
-                            td.put(ds.getKey(), product1);
-                            ArrayList<Product> values = new ArrayList<>(td.values());
-                            List<String> keys = new ArrayList<>(td.keySet());
+                            mapData.put(ds.getKey(), product1);
+                            ArrayList<Product> values = new ArrayList<>(mapData.values());
+                            List<String> keys = new ArrayList<>(mapData.keySet());
 //                            for (Product p : values) {
 //                                Log.e("firebase", p.getUrl());
 //                            }
@@ -284,7 +270,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                             list_from_db.clear();
                         }
                     }
-
                     Log.e("Check list_from_db 1", String.valueOf(list_from_db.size()));
                 }
 
@@ -301,8 +286,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         union = Stream.concat(list_from_db.stream(), selectedList.stream())
                                 .distinct()
                                 .collect(Collectors.toList());
+                        databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).setValue(union);
+//                        databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).removeValue();
 
-
+                        //Clear Selection
+                        for (int i = 0; i < selectedList.size(); i++) {
+                            selectedList.get(i).setSelected(false);
+                        }
+                        loadFragment(new CartFragment());
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                        dialog.dismiss();
+                        for (int i = 0; i < selectedList.size(); i++) {
+                            selectedList.get(i).setSelected(false);
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+        } else
+            showAlert(getActivity().getString(R.string.add_cart_message1));
+    }
+}
 //                        int count = union.size();
 //                        for (int i = 0; i < count; i++) {
 //                            if (i + 1 < count && union.get(i).getUrl().equals(union.get(i + 1).getUrl())) {
@@ -311,7 +316,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //                                count--;
 //                            }
 //                        }
-
+//                          Map<String, String> map = new HashMap<>();
+//                          FirebaseFirestore storeDb = FirebaseFirestore.getInstance();
 //                        FirebaseFirestore.getInstance().collection("Cart_details").document(mUserId).get()
 //                                .addOnCompleteListener(task -> {
 //                                    if (task.isSuccessful()) {
@@ -351,36 +357,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
 //                        for (int i = 0; i < selectedList.size(); i++) {
 //                            map.put(mUserId + "_pId_" + i, selectedList.get(i).getProdId());
-//                            map.put(mUserId + "_pName_" + i, selectedList.get(i).getProduct());
+//                            map.put(mUserId + "_pName_" + i, selectedList.get(i).getProduct());co
 //                            map.put(mUserId + "_pUrl_" + i, selectedList.get(i).getUrl());
 //                            map.put(mUserId + "_pDesc_" + i, selectedList.get(i).getDescrption());
 //                            map.put(mUserId + "_pSel_" + i, selectedList.get(i).getSelected().toString());
 //                            storeDb.collection("Cart_details").document(mUserId).set(map,SetOptions.merge());
 //                        }
-                        databaseReference.child("users").child(mUserId).child("Product").setValue(union);
-//                        databaseReference.child("users").child(mUserId).child("Product").removeValue();
-
-                        //Clear Selection
-                        for (int i = 0; i < selectedList.size(); i++) {
-                            selectedList.get(i).setSelected(false);
-                        }
-                        loadFragment(new CartFragment());
-                    })
-                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
-                        dialog.dismiss();
-                        for (int i = 0; i < selectedList.size(); i++) {
-                            selectedList.get(i).setSelected(false);
-                        }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-        } else
-            showAlert(getActivity().getString(R.string.add_cart_message1));
-    }
 
 
-}
+
+
 
 
 

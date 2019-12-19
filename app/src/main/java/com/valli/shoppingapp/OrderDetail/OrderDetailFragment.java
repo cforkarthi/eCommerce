@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.valli.shoppingapp.Constants;
 import com.valli.shoppingapp.Dashboard;
 import com.valli.shoppingapp.BaseFragment;
 import com.valli.shoppingapp.Model.Product;
@@ -31,23 +32,19 @@ import java.util.regex.Pattern;
 import static com.valli.shoppingapp.Constants.list_Size;
 
 public class OrderDetailFragment extends BaseFragment {
+
     /**
      * retrieve the stored document from cloudstore and show it to the user
      * with header no options to do here
      */
 
-    Context ctx;
+    private Context ctx;
     private View view;
     private TextView title, nodata;
     private View listView;
-    private ImageView logout;
-    private FirebaseFirestore storeDb;
     private String mUserId;
-    private FirebaseAuth mfirebaseAuth;
-    private FirebaseUser mfirebaseuser;
     //    private List<Product> list_from_db = new ArrayList<>(), list_to_disp = new ArrayList<>();
     private Product p;
-    private int size_of_list = 0;
     private List<Product> productList = new ArrayList();
 
     @Nullable
@@ -70,7 +67,7 @@ public class OrderDetailFragment extends BaseFragment {
 
         showProgress("Loading");
 
-        FirebaseFirestore.getInstance().collection("Order_Details").document(mUserId).get()
+        FirebaseFirestore.getInstance().collection(Constants.ORDERDETAIL).document(mUserId).get()
                 .addOnCompleteListener(task -> {
                     Log.e("check ord", String.valueOf(task.getResult()));
 
@@ -79,13 +76,12 @@ public class OrderDetailFragment extends BaseFragment {
                         if (doc != null && doc.exists()) {
                             if (doc.getData().toString().equalsIgnoreCase("{}")) {
                                 removeProgress();
-//                              showAlert("No History!");
                                 nodata.setVisibility(View.VISIBLE);
                                 listView.setVisibility(View.GONE);
                             } else {
                                 nodata.setVisibility(View.GONE);
                                 listView.setVisibility(View.VISIBLE);
-                                int count = 0;
+                                int count;
 //                                String document = doc.getData().toString();
 
                                 count = (int) (Pattern.compile("_pId_").splitAsStream(task.getResult().toString()).count() - 1);
@@ -134,11 +130,9 @@ public class OrderDetailFragment extends BaseFragment {
 
     private void setUpValues() {
         ctx = getContext();
-        storeDb = FirebaseFirestore.getInstance();
-        mfirebaseAuth = FirebaseAuth.getInstance();
-        mfirebaseuser = mfirebaseAuth.getCurrentUser();
+        FirebaseAuth mfirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mfirebaseuser = mfirebaseAuth.getCurrentUser();
         mUserId = mfirebaseuser.getUid();
-        size_of_list = pref.getInt(list_Size, 10);
     }
 
     private void setUpViews() {
@@ -147,7 +141,7 @@ public class OrderDetailFragment extends BaseFragment {
         title.setText(getActivity().getString(R.string.menu_order_title));
         listView = view.findViewById(R.id.listview);
         nodata = view.findViewById(R.id.nodata);
-        logout = toolbar.findViewById(R.id.logout);
+        ImageView logout = toolbar.findViewById(R.id.logout);
         logout.setOnClickListener(v -> logout());
     }
 

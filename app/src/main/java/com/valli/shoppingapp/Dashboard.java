@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.valli.shoppingapp.Cart.CartFragment;
+import com.valli.shoppingapp.Contacts.ContactsFragment;
 import com.valli.shoppingapp.Home.HomeFragment;
 import com.valli.shoppingapp.OrderDetail.OrderDetailFragment;
 import com.valli.shoppingapp.Profile.ProfileFragment;
@@ -20,6 +21,7 @@ public class Dashboard extends AppCompatActivity {
     final Fragment fragment2 = new CartFragment();
     final Fragment fragment3 = new ProfileFragment();
     final Fragment fragment4 = new OrderDetailFragment();
+    final Fragment fragment5 = new ContactsFragment();
     public BottomNavigationView navView;
 
     public SharedPreferences pref;
@@ -57,6 +59,10 @@ public class Dashboard extends AppCompatActivity {
 
             case R.id.orderDetail:
                 fragment = fragment4;
+                break;
+
+            case R.id.contacts:
+                fragment = fragment5;
                 break;
         }
         return loadFragment(fragment);

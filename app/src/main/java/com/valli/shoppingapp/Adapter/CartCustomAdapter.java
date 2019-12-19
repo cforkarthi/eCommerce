@@ -21,9 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 import com.valli.shoppingapp.Cart.CartFragment;
+import com.valli.shoppingapp.Constants;
 import com.valli.shoppingapp.Model.Product;
 import com.valli.shoppingapp.R;
 
@@ -84,8 +84,6 @@ public class CartCustomAdapter extends RecyclerView.Adapter<CartCustomAdapter.Ca
         FirebaseAuth mfirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mfirebaseuser = mfirebaseAuth.getCurrentUser();
         String mUserId = mfirebaseuser.getUid();
-        Map<String, String> map = new HashMap<>();
-        FirebaseFirestore storeDb =  FirebaseFirestore.getInstance();
         AlertDialog.Builder build = new AlertDialog.Builder(ctx);
         build.setMessage(ctx.getString(R.string.delete_confirmation_msg))
                 .setTitle(R.string.login_error_title)
@@ -93,6 +91,10 @@ public class CartCustomAdapter extends RecyclerView.Adapter<CartCustomAdapter.Ca
                     productList.remove(position);
                     notifyDataSetChanged();
                     Toast.makeText(ctx, ctx.getString(R.string.item_deleted), Toast.LENGTH_SHORT).show();
+
+                    //store
+//                    Map<String, String> map = new HashMap<>();
+//                    FirebaseFirestore storeDb =  FirebaseFirestore.getInstance();
 //                    storeDb.collection("Cart_details").document(mUserId).delete();
 //                    for (int i = 0; i < productList.size(); i++) {
 //                        map.put(mUserId + "_pId_" + i, productList.get(i).getProdId());
@@ -102,7 +104,8 @@ public class CartCustomAdapter extends RecyclerView.Adapter<CartCustomAdapter.Ca
 //                        map.put(mUserId + "_pSel_" + i, productList.get(i).getSelected().toString());
 //                        storeDb.collection("Cart_details").document(mUserId).set(map);
 //                    }
-                    databaseReference.child("users").child(mUserId).child("Product").setValue(productList);
+                    // db
+                    databaseReference.child(Constants.USERS).child(mUserId).child(Constants.PRODUCT).setValue(productList);
                     ProgressDialog pd = new ProgressDialog(ctx);
                     pd.show();
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();

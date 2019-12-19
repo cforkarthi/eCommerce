@@ -42,6 +42,7 @@ public class RegisterActivity extends CommonActivity {
     private DatabaseReference db;
 
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class RegisterActivity extends CommonActivity {
 
     private void setUpValues() {
         firebaseAuth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance().getReference().child("users");
+        db = FirebaseDatabase.getInstance().getReference().child(Constants.USERS);
         submit.setOnClickListener(v -> {
             registerUser();
         });
@@ -106,7 +107,7 @@ public class RegisterActivity extends CommonActivity {
         //Registering User
         if (uName.isEmpty() || uDob.isEmpty() || uMobile.isEmpty() || uAdrs.isEmpty() || uEmail.isEmpty() || uPass.isEmpty()) {
             showAlert("Fields cannot be empty");
-        } else if (!android.util.Patterns.PHONE.matcher(uMobile).matches() || uMobile.length()<10) {
+        } else if (!android.util.Patterns.PHONE.matcher(uMobile).matches() || uMobile.length() < 10) {
             showAlert("Mobile number is not valid");
 
         } else {
@@ -123,26 +124,8 @@ public class RegisterActivity extends CommonActivity {
 
                     //removed as suggested
 //                    db.child(String.valueOf(click_count + 1)).setValue("users");
-
                     newUserRef.push();
                     sendVerificationMail();
-                    removeProgress();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage(getString(R.string.SUCCESSFUL_REGISTERATION_MSG))
-                            .setTitle(R.string.login_error_title)
-                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                overridePendingTransition(0, 0);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            });
-                    AlertDialog dialog = builder.create();
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-
-                    editor.putString(Constants.USER_EMAIL, uEmail);
-                    editor.commit();
-
                 } else {
                     removeProgress();
                     showAlert(task.getException().getMessage());
@@ -154,12 +137,31 @@ public class RegisterActivity extends CommonActivity {
 
     private void sendVerificationMail() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         Objects.requireNonNull(firebaseUser).sendEmailVerification().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().signOut();
+                removeProgress();
+                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                builder.setMessage(getString(R.string.SUCCESSFUL_REGISTERATION_MSG))
+                        .setTitle(R.string.login_error_title)
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                            overridePendingTransition(0, 0);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
+                editor.putString(Constants.USER_EMAIL, uEmail);
+                editor.commit();
             } else {
-                showAlert(task.getException().getMessage());
+                removeProgress();
+                showAlert("test");
             }
         });
+
     }
 }

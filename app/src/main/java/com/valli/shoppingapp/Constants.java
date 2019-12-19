@@ -7,4 +7,9 @@ public class Constants {
     public static final String user_ID = "user_ID";
     public static final String CURRENT_USER_KEY = "CURRENT_USER_KEY";
 
+    // Firebase
+    public static final String USERS = "users";
+    public static final String PRODUCT = "Product";
+    public static final String ORDERDETAIL = "Order_Details";
+
 }

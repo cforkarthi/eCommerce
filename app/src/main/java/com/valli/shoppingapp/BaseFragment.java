@@ -33,9 +33,7 @@ public class BaseFragment extends Fragment {
     public SharedPreferences pref;
     public SharedPreferences.Editor editor;
     public ProgressDialog progressDialog;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
-    private String userID;
+    public FirebaseDatabase firebaseDatabase;
     private Context context;
 
 
@@ -51,6 +49,8 @@ public class BaseFragment extends Fragment {
         setUpValues();
     }
 
+
+
     private void setUpValues() {
         context = getContext();
         pref = getContext().getSharedPreferences(Constants.MYPREF, 0); // 0 - for private mode
@@ -58,7 +58,6 @@ public class BaseFragment extends Fragment {
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("users");
 
     }
 
@@ -69,6 +68,7 @@ public class BaseFragment extends Fragment {
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
 //                            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 //                            SharedPreferences.Editor editor = mPrefs.edit();
+
                             editor.clear();
                             editor.commit();
 //                                    ((ActivityManager) getActivity().getSystemService(ACTIVITY_SERVICE))
@@ -100,8 +100,6 @@ public class BaseFragment extends Fragment {
         Intent it1 = new Intent(activity, LoginActivity.class);
         it1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(it1);
-
-
 //        editor.putBoolean("loggedIn ", true);
 //        editor.commit();
     }
@@ -131,9 +129,9 @@ public class BaseFragment extends Fragment {
 //                    userID = ds.getKey();
 //                    editor.putString(CURRENT_USER_KEY,userID);
 //                    editor.commit();
-////                    databaseReference.child("Product").setValue(selectedList);
-////                    databaseReference.push();
-////                    firebaseDatabase.getReference().child("users").child(userID).child("Product").setValue(selectedList);
+//                 databaseReference.child(Constants.PRODUCT).setValue(selectedList);
+//                  databaseReference.push();
+//                    firebaseDatabase.getReference().child(Constants.USERS).child(userID).child(Constants.PRODUCT).setValue(selectedList);
 //                }
 //            }
 //

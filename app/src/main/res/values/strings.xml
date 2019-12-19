@@ -22,8 +22,6 @@
     <string name="add_to_cart">Add to Cart</string>
     <string name="add">Add</string>
     <string name="reset">Clear</string>
-    <string name="drawer_open">Open Nsvigation Drawer</string>
-    <string name="drawer_close">Close Navigation Drawer</string>
     <string name="LAST_REGISTERATION">Last Register ID</string>
     <string name="select_items">Select items</string>
     <string name="add_all">Add All</string>
@@ -69,4 +67,10 @@
     <string name="cancel">Cancel</string>
     <string name="item_deleted">Item has been deleted</string>
     <string name="clear_cart">Clear Cart</string>
+
+    <string name="RPS_PERMISSION">\nKotak Bank App requires “Make and Manage phone calls” permission for the app to work.\n"</string>
+    <string name="RPS_PERMISSION1">\n(Please allow this permission by visiting Settings > Apps > Kotak Bank > Permission)</string>
+    <string name="menu_contact">Contact</string>
+    <string name="click_here_to_load_contacts">Click Here to load Contacts</string>
+    <string name="count">Count :</string>
 </resources>
